@@ -3,6 +3,9 @@ Temperature controller for Arduino
 
 
 Arduino sketch:
+-----------------
+
+```
 const int btnSetMode = 3;
 const int btnTempDown = 2;
 const int ledPin = 8;
@@ -21,9 +24,6 @@ void setup()
 
 void loop()
 {
-
-
-
    if(Serial.available() > 0) {
     incomingByte = Serial.read();
 
@@ -50,3 +50,5 @@ void loop()
 
 
 }
+
+```
