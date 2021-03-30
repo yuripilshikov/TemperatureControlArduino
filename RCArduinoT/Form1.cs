@@ -117,16 +117,19 @@ namespace RCArduinoT
             if(timeLeft > 0)
             {
                 timeLeft -= 1;
-                label1.Text = timeLeft + " секунд";
+                label1.Text = "или " + timeLeft + " секунд";
+                //label2.Text = "Осталось " + (timeLeft / 60) + " минут" + " и " + (timeLeft % 60) + " секунд";
+                label2.Text = "Осталось " + (timeLeft / 3600) + " часов, " + ((timeLeft % 3600)/60) + " минут" + " и " + ((timeLeft % 3600)%60) + " секунд";
             }
             else
             {
                 timer1.Stop();
                 label1.Text = "Таймер завершен";
+                label2.Text = "";
                 txtLogOutput.AppendText(DateTime.Now + " " + "Таймер завершен" + Environment.NewLine);
                 if (isConnected)
                 {
-                    serialPort1.Write("9");
+                    //serialPort1.Write("9");
                     serialPort1.Write("1");
                     System.Threading.Thread.Sleep(2000);
                     serialPort1.Write("0");
@@ -158,19 +161,53 @@ namespace RCArduinoT
 
         private void StartTimer()
         {
-            if (int.TryParse(txtTimer.Text, out timeLeft))
+
+            int hours;
+            int minutes;
+            int seconds;
+
+            if(int.TryParse(timerHours.Text, out hours))
             {
-                txtLogOutput.AppendText(DateTime.Now + " " + "Таймер установлен: " + timeLeft + Environment.NewLine);
+                //
             }
             else
             {
-                timeLeft = 4;
-                txtLogOutput.AppendText(DateTime.Now + " " + "Не могу разобрать, таймер установлен на значение по умолчанию: " + timeLeft + Environment.NewLine);
-            } 
+                hours = 0;
+            }
 
-            label1.Text = timeLeft + "секунд";
-            timer1.Start();
-            txtLogOutput.AppendText(DateTime.Now + " " + "Таймер запущен" + Environment.NewLine);
+            if(int.TryParse(timerMinutes.Text, out minutes))
+            {
+                //
+            }
+            else
+            {
+                minutes = 0;
+            }
+
+            if(int.TryParse(timerSeconds.Text, out seconds))
+            {
+                //
+            }
+            else
+            {
+                seconds = 0;
+            }
+
+            timeLeft = (hours * 60 * 60) + (minutes * 60) + seconds;
+            if(timeLeft > 0)
+            {
+                label1.Text = "или " + timeLeft + " секунд";
+                //label2.Text = "Осталось " + (timeLeft / 60) + " минут" + " и " + (timeLeft % 60) + " секунд";
+                label2.Text = "Осталось " + (timeLeft / 3600) + " часов, " + ((timeLeft % 3600) / 60) + " минут" + " и " + ((timeLeft % 3600) % 60) + " секунд";
+                timer1.Start();
+                txtLogOutput.AppendText(DateTime.Now + " " + "Таймер запущен" + Environment.NewLine);
+            }
+            else
+            {
+                txtLogOutput.AppendText(DateTime.Now + " " + "Пожалуйста, задайте время. Таймер НЕ запущен." + Environment.NewLine);
+            }
+
+            
         }
 
         private void txtTimer_KeyPress(object sender, KeyPressEventArgs e)
@@ -186,6 +223,7 @@ namespace RCArduinoT
         {
             timer1.Stop();
             label1.Text = "СТОП";
+            label2.Text = "";
             txtLogOutput.AppendText(DateTime.Now + " " + "Таймер прерван" + Environment.NewLine);
         }
 
@@ -193,6 +231,38 @@ namespace RCArduinoT
         {
             About about = new About();
             about.Show();
+        }
+
+        private void timerHours_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void timerHours_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char number = e.KeyChar;
+            if (!Char.IsDigit(number) && number != 8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void timerMinutes_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char number = e.KeyChar;
+            if (!Char.IsDigit(number) && number != 8)
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void timerSeconds_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            char number = e.KeyChar;
+            if (!Char.IsDigit(number) && number != 8)
+            {
+                e.Handled = true;
+            }
         }
     }
 }
