@@ -60,7 +60,7 @@ namespace RCArduinoT
             if(isConnected)
             {
                 serialPort1.Write("1");
-                txtLogOutput.AppendText(DateTime.Now + " " + "1Сигнал кнопки 1 отправлен" + Environment.NewLine);
+                txtLogOutput.AppendText(DateTime.Now + " " + "Сигнал кнопки 1 отправлен" + Environment.NewLine);
             }
             
             
@@ -120,6 +120,7 @@ namespace RCArduinoT
                 label1.Text = "или " + timeLeft + " секунд";
                 //label2.Text = "Осталось " + (timeLeft / 60) + " минут" + " и " + (timeLeft % 60) + " секунд";
                 label2.Text = "Осталось " + (timeLeft / 3600) + " часов, " + ((timeLeft % 3600)/60) + " минут" + " и " + ((timeLeft % 3600)%60) + " секунд";
+                Heartbeat();
             }
             else
             {
@@ -262,6 +263,23 @@ namespace RCArduinoT
             if (!Char.IsDigit(number) && number != 8)
             {
                 e.Handled = true;
+            }
+        }
+
+        private void Heartbeat()
+        {
+            if (isConnected)
+            {
+                serialPort1.Write("9");
+
+            }
+            else
+            {
+                txtLogOutput.AppendText(DateTime.Now + " " + "!!! Отвалился порт !!!" + Environment.NewLine);
+                txtLogOutput.AppendText(DateTime.Now + " " + "Попытка восстановления соединения" + Environment.NewLine);
+                
+                ConnectToArduino();
+
             }
         }
     }
